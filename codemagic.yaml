@@ -1,0 +1,41 @@
+workflows:
+  ditonton-test:
+    name: Ditonton Test & Build
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      flutter: 3.44.5
+      java: 17
+    triggering:
+      events:
+        - push
+        - pull_request
+      branch_patterns:
+        - pattern: '*'
+          include: true
+          source: true
+    scripts:
+      - name: Ambil dependensi seluruh modul
+        script: |
+          for package in packages/core packages/movie packages/tv_series .; do
+            (cd "$package" && flutter pub get)
+          done
+      - name: Analisis kode
+        script: |
+          for package in packages/core packages/movie packages/tv_series .; do
+            (cd "$package" && flutter analyze)
+          done
+      - name: Pengujian unit & widget beserta coverage
+        script: ./test.sh
+      - name: Build APK release
+        script: flutter build apk --release
+    artifacts:
+      - build/app/outputs/flutter-apk/app-release.apk
+      - coverage/lcov.info
+    publishing:
+      email:
+        recipients:
+          - admin@connectowl.io
+        notify:
+          success: true
+          failure: true

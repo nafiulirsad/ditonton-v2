@@ -1,0 +1,92 @@
+name: Ditonton CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: ['**']
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Analyze & Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.44.5
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: |
+          for package in packages/core packages/movie packages/tv_series .; do
+            echo "flutter pub get pada $package"
+            (cd "$package" && flutter pub get)
+          done
+
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed lib packages/*/lib test packages/*/test integration_test
+
+      - name: Analyze project source
+        run: |
+          for package in packages/core packages/movie packages/tv_series .; do
+            echo "flutter analyze pada $package"
+            (cd "$package" && flutter analyze)
+          done
+
+      - name: Run tests with coverage
+        run: ./test.sh
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/lcov.info
+
+  build:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    needs: test
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.44.5
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build release APK
+        run: flutter build apk --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ditonton-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk

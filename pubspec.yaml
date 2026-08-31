@@ -1,0 +1,45 @@
+name: ditonton
+description: Aplikasi katalog film dan serial TV yang dibangun dengan Clean Architecture dan modularisasi.
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  core:
+    path: packages/core
+  firebase_analytics: ^12.0.4
+  firebase_core: ^4.1.4
+  firebase_crashlytics: ^5.0.4
+  flutter_bloc: ^9.1.1
+  get_it: ^8.0.3
+  google_fonts: ^6.2.1
+  http: ^1.2.2
+  movie:
+    path: packages/movie
+  tv_series:
+    path: packages/tv_series
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+
+  bloc_test: ^10.0.0
+  build_runner: ^2.4.14
+  flutter_lints: ^6.0.0
+  mockito: ^5.4.5
+  sqflite_common_ffi: ^2.3.4
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/
+    - assets/fonts/
