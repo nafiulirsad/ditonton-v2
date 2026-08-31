@@ -27,6 +27,12 @@ Future<void> main() async {
   );
 }
 
+/// Batas waktu inisialisasi Firebase.
+///
+/// Menjaga aplikasi tetap terbuka ketika layanan Firebase tidak dapat dihubungi,
+/// misalnya pada lingkungan pengujian yang tidak memiliki platform channel.
+const Duration _firebaseInitTimeout = Duration(seconds: 10);
+
 /// Menyalakan Firebase beserta pelaporan crash otomatis.
 ///
 /// Mengembalikan `true` bila Firebase siap dipakai. Kegagalan inisialisasi tidak
@@ -36,7 +42,7 @@ Future<bool> _initializeFirebase() async {
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
-    );
+    ).timeout(_firebaseInitTimeout);
     registerCrashHandlers(
       reporter: FirebaseCrashReporter(
         crashlytics: FirebaseCrashlytics.instance,

@@ -7,11 +7,35 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'helpers/widget_test_helper.dart';
 
+/// Kanal Pigeon milik `firebase_core`.
+///
+/// Pada pengujian, kanal ini dijawab `null` sehingga `Firebase.initializeApp`
+/// gagal seperti pada perangkat tanpa konfigurasi Firebase.
+const _firebaseCoreChannels = <String>[
+  'dev.flutter.pigeon.firebase_core_platform_interface.FirebaseCoreHostApi.initializeCore',
+  'dev.flutter.pigeon.firebase_core_platform_interface.FirebaseCoreHostApi.initializeApp',
+  'dev.flutter.pigeon.firebase_core_platform_interface.FirebaseCoreHostApi.optionsFromResource',
+];
+
 void main() {
   setUp(() {
     setUpWidgetTest();
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
+
+    final messenger =
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    for (final channel in _firebaseCoreChannels) {
+      messenger.setMockMessageHandler(channel, (message) async => null);
+    }
+  });
+
+  tearDown(() {
+    final messenger =
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    for (final channel in _firebaseCoreChannels) {
+      messenger.setMockMessageHandler(channel, null);
+    }
   });
 
   tearDown(() => di.locator.reset());
