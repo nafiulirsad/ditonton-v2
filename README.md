@@ -122,6 +122,16 @@ ditolak dengan `HandshakeException`.
 - Halaman **About** memuat dua tombol uji: `Kirim Eror Uji` (non-fatal) dan
   `Paksa Crash` (fatal) untuk memverifikasi laporan yang masuk ke console.
 
+Project yang dipakai: **`ditonton-nafiulirsad`**
+(<https://console.firebase.google.com/project/ditonton-nafiulirsad>). Bukti
+integrasi tersimpan pada folder `screenshots/`:
+
+| Berkas | Isi |
+|---|---|
+| `nafiulirsad-firebase-analytics.png` | DebugView Analytics: `screen_view`, `session_start`, `first_open`, `app_exception` |
+| `nafiulirsad-firebase-crashlytics.png` | Issue `FirebaseCrashlyticsTestCrash` dari tombol uji pada halaman About |
+| `nafiulirsad-github-actions-build.png` | Build GitHub Actions yang sukses |
+
 Menyiapkan Firebase pada mesin baru:
 
 ```bash
