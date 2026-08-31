@@ -1,6 +1,5 @@
 import 'package:ditonton/injection.dart' as di;
 import 'package:ditonton/main.dart' as app;
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:movie/movie.dart';
